@@ -6,6 +6,9 @@ A simple app using three ROS nodes named:
 
 Currently there is no purpose in game. Player can just move around the map.  
 To move the player use "awsd" in terminal running `keyboard_reader` node.
+The game window looks like:
+![image](https://github.com/KacperSynator/ROS-Game/assets/62207289/557ce29f-74cd-4e0c-92e3-46d7c477a939)
+
 
 ## Getting started
 ### Dependancies
