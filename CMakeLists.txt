@@ -13,6 +13,19 @@ find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(Curses REQUIRED)
+find_package(rosidl_default_generators REQUIRED)
+find_package(ros_game REQUIRED)
+
+rosidl_generate_interfaces(${PROJECT_NAME}
+  "msg/ObjectData.msg"
+ )
+
+set_target_properties(ros_game__rosidl_generator_c PROPERTIES LINKER_LANGUAGE CXX)
+set_target_properties(ros_game__rosidl_typesupport_introspection_c PROPERTIES LINKER_LANGUAGE CXX)
+set_target_properties(ros_game__rosidl_generator_py PROPERTIES LINKER_LANGUAGE CXX)
+set_target_properties(ros_game__rosidl_typesupport_introspection_c__pyext PROPERTIES LINKER_LANGUAGE CXX)
+set_target_properties(ros_game__rosidl_typesupport_fastrtps_c__pyext PROPERTIES LINKER_LANGUAGE CXX)
+set_target_properties(ros_game__rosidl_typesupport_c__pyext PROPERTIES LINKER_LANGUAGE CXX)
 
 find_package(SDL2 REQUIRED)
 include_directories(${SDL2_INCLUDE_DIRS})
@@ -20,14 +33,17 @@ include_directories(${SDL2_INCLUDE_DIRS})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 add_executable(keyboard_reader src/keyboard_reader.cpp)
-ament_target_dependencies(keyboard_reader rclcpp std_msgs)
+ament_target_dependencies(keyboard_reader rclcpp std_msgs ros_game)
 target_link_libraries(keyboard_reader ${CURSES_LIBRARIES})
 
-add_executable(game_display src/game_display.cpp src/sdl_window.cpp)
-ament_target_dependencies(game_display rclcpp std_msgs)
+add_executable(game_controller src/game_controller.cpp)
+ament_target_dependencies(game_controller rclcpp std_msgs ros_game)
+
+add_executable(game_display src/game_display.cpp)
+ament_target_dependencies(game_display rclcpp std_msgs ros_game)
 target_link_libraries(game_display ${SDL2_LIBRARIES})
 
-install(TARGETS keyboard_reader game_display
+install(TARGETS keyboard_reader game_display game_controller
   DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)

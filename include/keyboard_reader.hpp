@@ -1,5 +1,5 @@
 #include "rclcpp/rclcpp.hpp"
-#include "std_msgs/msg/string.hpp"
+#include "std_msgs/msg/char.hpp"
 
 class KeyboardReader final : public rclcpp::Node {
    public:
@@ -9,5 +9,5 @@ class KeyboardReader final : public rclcpp::Node {
     bool handleEvents();
 
    private:
-    rclcpp::Publisher<std_msgs::msg::String>::SharedPtr publisher_;
+    rclcpp::Publisher<std_msgs::msg::Char>::SharedPtr publisher_;
 };

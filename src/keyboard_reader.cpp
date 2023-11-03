@@ -7,15 +7,14 @@
 #include <memory>
 #include <string>
 
-
 namespace {
 constexpr std::string_view NODE_NAME = "keyboard_reader";
-constexpr std::string_view PUB_TOPIC = "ros_game/keyboard";
-constexpr auto QUEUE_SIZE = 10;
+constexpr std::string_view PUB_TOPIC = "ros_game/keyboard_down";
+constexpr auto QUEUE_SIZE = 1;
 }  // namespace
 
 KeyboardReader::KeyboardReader() : Node(NODE_NAME.data()) {
-    publisher_ = this->create_publisher<std_msgs::msg::String>(PUB_TOPIC.data(), QUEUE_SIZE);
+    publisher_ = this->create_publisher<std_msgs::msg::Char>(PUB_TOPIC.data(), QUEUE_SIZE);
     initscr();             // Initialize ncurses
     raw();                 // Disable line buffering
     keypad(stdscr, TRUE);  // Enable special keys
@@ -31,19 +30,19 @@ bool KeyboardReader::handleEvents() {
         return true;
     }
 
-    auto message = std_msgs::msg::String();
+    auto message = std_msgs::msg::Char();
     switch (ch) {
         case 'a':
-            message.data = "a";
+            message.data = 'a';
             break;
         case 'w':
-            message.data = "b";
+            message.data = 'w';
             break;
         case 's':
-            message.data = "s";
+            message.data = 's';
             break;
         case 'd':
-            message.data = "d";
+            message.data = 'd';
             break;
         case 'q':
             return false;  // Exit the loop if 'q' is pressed
@@ -51,7 +50,6 @@ bool KeyboardReader::handleEvents() {
             return true;
             break;
     }
-    RCLCPP_INFO(this->get_logger(), "Publishing: '%s'", message.data.c_str());
     publisher_->publish(message);
 
     return true;
@@ -64,7 +62,6 @@ int main(int argc, char* argv[]) {
     bool running = true;
     while (running) {
         running = keyboard_reader->handleEvents();
-
         rclcpp::spin_some(keyboard_reader);
     }
 

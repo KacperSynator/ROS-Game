@@ -1,5 +1,7 @@
+#include <SDL2/SDL.h>
+
 #include "rclcpp/rclcpp.hpp"
-#include "sdl_window.hpp"
+#include "ros_game/msg/object_data.hpp"
 #include "std_msgs/msg/string.hpp"
 
 class GameDisplay final : public rclcpp::Node {
@@ -7,9 +9,14 @@ class GameDisplay final : public rclcpp::Node {
     GameDisplay();
     ~GameDisplay();
 
-    void gameUpdateCallback(const std_msgs::msg::String& msg);
+    void playerUpdateCallback(const ros_game::msg::ObjectData& msg);
+    void startEventLoop();
+    void handleEvents();
 
    private:
-    rclcpp::Subscription<std_msgs::msg::String>::SharedPtr subscription_;
-    SDLWindow window_;
+    SDL_Window* window_ = nullptr;
+    SDL_Renderer* renderer_ = nullptr;
+    rclcpp::Subscription<ros_game::msg::ObjectData>::SharedPtr subscription_;
+
+    bool running_;
 };
